@@ -7,7 +7,7 @@ using Telegram.Bot.Types.Enums;
 
 class Program
 {
-    private static readonly string BotToken = "7487072577:AAEtljRaSzEj9cYPUlbs82K163Qfwp_T_yU";
+    private static readonly string BotToken = "token";
     private static readonly TelegramBotClient BotClient = new TelegramBotClient(BotToken);
 
     static async Task Main()
