@@ -16,7 +16,7 @@ class Program
         {
 
 
-            Console.WriteLine("Бот запущен!");
+            Console.WriteLine("Bot started");
 
             var cts = new CancellationTokenSource();
             var cancellationToken = cts.Token;
@@ -27,25 +27,25 @@ class Program
                 cancellationToken: cancellationToken
             );
 
-            Console.WriteLine("Нажмите Enter для завершения работы бота.");
+            Console.WriteLine("Enter to stop bot.");
             await Task.Run(() => Console.ReadLine());
 
             cts.Cancel();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Произошла ошибка: {ex.InnerException}");
+            Console.WriteLine($"Error: {ex.InnerException}");
         }
     }
 
 
-    // Обработчик обновлений (входящих сообщений)
+    // Update handler (incoming messages)
     private static async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
         if (update.Type == UpdateType.Message && update.Message?.Text != null)
         {
             var message = update.Message;
-            Console.WriteLine($"Получено сообщение: {message.Text} от {message.Chat.Id}");
+            Console.WriteLine($"Got message: {message.Text} from {message.Chat.Id}");
             var messageParts = message.Text.Split(' ');
             int messagePartsLength = messageParts.Length;
 
@@ -59,12 +59,12 @@ class Program
                     {
                         item += messageParts[i] + " "; // Save in dictionary
                     }
-                    Console.WriteLine($"Сохранено значение: {value.ToString()} по ключу: {item}");
-                    await botClient.SendTextMessageAsync(message.Chat.Id, $"Сохранено значение: {value.ToString()} по ключу: {item}");
+                    Console.WriteLine($"Saved value: {value.ToString()} by key: {item}");
+                    await botClient.SendTextMessageAsync(message.Chat.Id, $"Saved value: {value.ToString()} by key: {item}");
                 }
                 else
                 {
-                    await botClient.SendTextMessageAsync(message.Chat.Id, "Не удалось сохранить значение. Попробуйте еще раз.");
+                    await botClient.SendTextMessageAsync(message.Chat.Id, "Saving has failed. Try again.");
                 }
 
             }
@@ -74,25 +74,25 @@ class Program
                 if (int.TryParse(messageParts[messagePartsLength - 1], out int value))
                 {
                     var person = messageParts[2];
-                    Console.WriteLine($"Сумма {value} была отправлена: {person}");
-                    await botClient.SendTextMessageAsync(message.Chat.Id, $"Сумма {value} была отправлена: {person}");
+                    Console.WriteLine($"{value} was sent to: {person}");
+                    await botClient.SendTextMessageAsync(message.Chat.Id, $"{value} was sent to: {person}");
                 }
                 else
                 {
-                    await botClient.SendTextMessageAsync(message.Chat.Id, "Не удалось отправить значение. Попробуйте еще раз.");
+                    await botClient.SendTextMessageAsync(message.Chat.Id, "Sending has failed. Try again.");
                 }
             }
             else
             {
-                await botClient.SendTextMessageAsync(message.Chat.Id, "Неизвестная команда. Используйте команды /save и /get");
+                await botClient.SendTextMessageAsync(message.Chat.Id, "Unknown command. Use commands /save and /send");
             }
         }
     }
 
-    // Обработчик ошибок
+    // Error handler
     private static Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
     {
-        Console.WriteLine($"Ошибка: {exception.Message}");
+        Console.WriteLine($"Error: {exception.Message}");
         return Task.CompletedTask;
     }
 }
